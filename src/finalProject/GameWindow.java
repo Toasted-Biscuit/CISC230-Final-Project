@@ -12,6 +12,9 @@ public class GameWindow extends Application{
 	public void start(Stage ps) {
 		Label title = new Label("Game and stuff");
 		Button button = new Button("Click Me!");
+		Button nw = new Button("Hello");
+		System.out.println("hello");
+		System.out.println("hi");
 		button.setLayoutX(200);
 		button.setLayoutY(200);
 		
