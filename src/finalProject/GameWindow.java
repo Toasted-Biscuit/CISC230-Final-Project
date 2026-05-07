@@ -18,6 +18,8 @@ public class GameWindow extends Application{
 		button.setLayoutX(200);
 		button.setLayoutY(200);
 		
+		Connect4GameLogic test = new Connect4Gamelogic;
+		
 		Pane pane = new Pane(title, button);
 		Scene scene = new Scene(pane, 600, 600);
 		
