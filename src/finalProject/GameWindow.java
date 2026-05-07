@@ -16,7 +16,7 @@ public class GameWindow extends Application{
 		button.setLayoutY(200);
 		
 		Pane pane = new Pane(title, button);
-		Scene scene = new Scene(pane, 400, 400);
+		Scene scene = new Scene(pane, 600, 600);
 		
 		ps.setScene(scene);
 		ps.setTitle("Game!!!");
