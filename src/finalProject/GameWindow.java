@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 
 public class GameWindow extends Application{
-	Connect4GameLogic test;
+//	Connect4GameLogic test;
 	private int[][] idk;
 	private GridPane gridy;
 
@@ -31,6 +31,13 @@ public class GameWindow extends Application{
 		button.setLayoutX(200);
 		button.setLayoutY(200);
 		gridy = new GridPane();
+		
+		// Testing Connect4 methods
+		Connect4 c4 = new Connect4();
+		c4.displayBoard();
+		c4.placeChip(0, c4.YELLOW);
+		c4.placeChip(0, c4.RED);
+		c4.displayBoard();
 		
 		
 		
@@ -66,7 +73,5 @@ public class GameWindow extends Application{
 
 	public static void main(String[] args) {
 		launch(args);
-		
-		
 	}
 }
