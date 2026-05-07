@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 
 public class GameWindow extends Application{
-//	Connect4GameLogic test;
+	Connect4GameLogic test;
 	private int[][] idk;
 	private GridPane gridy;
 
