@@ -13,6 +13,7 @@ public class GameWindow extends Application{
 		Label title = new Label("Game and stuff");
 		Button button = new Button("Click Me!");
 		Button nw = new Button("Hello");
+		System.out.println("hello");
 		button.setLayoutX(200);
 		button.setLayoutY(200);
 		
