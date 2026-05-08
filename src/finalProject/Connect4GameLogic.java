@@ -6,14 +6,15 @@ public class Connect4GameLogic {
 
 	
 	public void setUpGrid() {
-		GameBoard = new int[7][7];
+		GameBoard = new int[6][7];
 		for(int x = 0; x < GameBoard.length;x++) {
 			for(int y = 0; y < 7; y++) {
 				GameBoard[x][y] = 1;
 			}
 		}
 		
-		for(int x = 0; x < GameBoard.length;x++) {
+		for(int x = 0; x < GameBoard.length;x++) {//ok here the 
+			//GameBoard has 7 rows and 7 columns 
 			for(int y = 0; y < 7; y++) {
 				System.out.print(GameBoard[x][y]); 
 				}
@@ -22,7 +23,7 @@ public class Connect4GameLogic {
 	}
 	
 	public int[][] getGrid(){
-		return GameBoard;
+		return GameBoard;//returining the array
 	}
 	
 }

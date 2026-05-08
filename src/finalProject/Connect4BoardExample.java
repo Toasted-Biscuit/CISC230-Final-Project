@@ -1,6 +1,8 @@
 package finalProject;
 
 import java.util.Random;
+
+import finalProject.Connect4;
 // Just and example of how the Connect4 class can be used
 // Also meant for testing methods if anybody want to edit the code
 public class Connect4BoardExample {
