@@ -82,7 +82,17 @@ public class GameWindow extends Application{
 		}
 	}
 	
+	// checks if someone won and updates the label
+	public void checkWin(ActionEvent event) {
+	    int winner = game.checkWinner();
+	    if (winner == Connect4.YELLOW) {
+	        turnLabel.setText("Yellow Wins!");
+	    } else if (winner == Connect4.RED) {
+	        turnLabel.setText("Red Wins!");
+	        
+	    }
 	
+	}
 
 	public static void main(String[] args) {
 		launch(args);

@@ -9,7 +9,8 @@ public class Connect4GameLogic {
 		GameBoard = new int[6][7];
 		for(int x = 0; x < GameBoard.length;x++) {
 			for(int y = 0; y < 7; y++) {
-				GameBoard[x][y] = 1;
+				GameBoard[x][y] = 0;//I think when the game starts
+				//here the grids should all be zero right first
 			}
 		}
 		
