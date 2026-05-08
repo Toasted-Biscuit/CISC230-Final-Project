@@ -10,8 +10,6 @@ import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.*;
-import java.util.Scanner;
-
 
 public class GameWindow extends Application{
 	Connect4GameLogic test;
@@ -25,8 +23,6 @@ public class GameWindow extends Application{
     private Circle[][] circles = new Circle[6][7];
 
 	public void start(Stage ps) {
-		
-		
 		Label title = new Label("Game and stuff");
 		Button button = new Button("Click Me!");
 		button.setOnAction(this::startGame);
@@ -36,16 +32,7 @@ public class GameWindow extends Application{
 		button.setLayoutX(200);
 		button.setLayoutY(200);
 		gridy = new GridPane();
-		
-		// Testing Connect4 methods
-		Connect4 c4 = new Connect4();
-		c4.displayBoard();
-		c4.placeChip(0, c4.YELLOW);
-		c4.placeChip(0, c4.RED);
-		c4.displayBoard();
-		
-		
-		
+				
 		
 		Pane pane = new Pane(title, button,gridy);
 		Scene scene = new Scene(pane, 500, 500);
@@ -83,15 +70,14 @@ public class GameWindow extends Application{
 	}
 	
 	// checks if someone won and updates the label
-	public void checkWin(ActionEvent event) {
+	public void checkWin() {
 	    int winner = game.checkWinner();
 	    if (winner == Connect4.YELLOW) {
 	        turnLabel.setText("Yellow Wins!");
+	        
 	    } else if (winner == Connect4.RED) {
 	        turnLabel.setText("Red Wins!");
-	        
 	    }
-	
 	}
 
 	public static void main(String[] args) {

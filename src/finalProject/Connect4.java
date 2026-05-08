@@ -11,7 +11,7 @@ public class Connect4 {
 	private int[][] board;
 	
 	public Connect4() {
-		board = new int[6][7];
+		board = new int[6][7]; // Default values of array is 0
 	}
 	
 	// Returns the lowest EMPTY row index for the given column. Meant to aid in placing chips
@@ -53,10 +53,8 @@ public class Connect4 {
 		return 0;
 	}
 	
-	// Helper method for checkWinner()
-	// takes a row, column, chip, chipInSequence, and direction.
-	/*
-	 * Recursively attempts to find a pattern of 4 chips in a row with the same color
+	/* Helper method for checkWinner()
+	 * Recursively attempts to find a pattern of 4 chips in a row with the same color.
 	 * row: The row that the method will check
 	 * col: The column that the method will check
 	 * chip: Defines the chip color that we are searching for
@@ -70,19 +68,24 @@ public class Connect4 {
 	 * 			  7 8 9
 	 */
 	private int findWinningPattern(int row, int col, int chip, int chipInSequence, int direction) {
+		// Stopping conditions
 		if (chipInSequence == 4) {
 			return chip;
 		} else if (row == board.length || row < 0 ||  col == board[row].length || col < 0) {
 			return 0;
 		}
 		
+		// Pattern checking
 		if (board[row][col] == chip) {
+			// Base direction, checks all other directions to see if they have a pattern
 			if (direction == 5) {
 				for (int i = 4; i <= 9; i++) {
 					if (i != 5 && findWinningPattern(row, col, chip, chipInSequence, i) == chip) {
 						return chip;
 					}
 				}
+				
+			// Checks if there are sequential chips of the same color in a direction
 			} else if (direction == 4) {
 				return (findWinningPattern(row, --col, chip, ++chipInSequence, direction) == chip) ? chip:  0;			
 			} else if (direction == 6) {
@@ -109,5 +112,10 @@ public class Connect4 {
 			}
 			System.out.println();
 		}
-	}	
+	}
+	
+	// Returns the board
+	public int[][] getBoard() {
+		return board;
+	}
 }

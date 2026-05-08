@@ -2,12 +2,10 @@ package finalProject;
 
 import java.util.Random;
 
-import finalProject.Connect4;
 // Just and example of how the Connect4 class can be used
 // Also meant for testing methods if anybody want to edit the code
 public class Connect4BoardExample {
 	public static void main(String[] args) {
-		Random rand = new Random();
 		Connect4 c4 = new Connect4();		
 		
 //		placeLeftDiagonal(c4);
@@ -15,6 +13,7 @@ public class Connect4BoardExample {
 //		placeVertLine(c4);
 //		placeHorizLine(c4);
 		randomGame(c4, 20);
+		
 		c4.displayBoard();
 		
 		System.out.println(c4.checkWinner());
@@ -27,6 +26,7 @@ public class Connect4BoardExample {
 		int turn = Connect4.YELLOW;
 		while (c4.checkWinner() == 0 && rounds > 0) {
 			c4.placeChip(rand.nextInt(0, 7), turn);
+			
 			if (turn == Connect4.YELLOW) {
 				turn = Connect4.RED;
 			} else {
