@@ -12,17 +12,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.*;
 
 public class GameWindow extends Application{
-	Connect4GameLogic test;
-	private int[][] idk;
+	private int[][] board;
 	private GridPane gridy;
 
 	//this is for the players to interact with dropping chip for the game
     private int currentPlayer = Connect4.YELLOW;
     private Connect4 game = new Connect4();
-    private Label turnLabel = new Label("Yellow's Turn!");
     private Circle[][] circles = new Circle[6][7];
+    private Label turnLabel = new Label("Yellow's Turn!");
 
-	public void start(Stage ps) {
+	public void start(Stage ps) {		
 		Label title = new Label("Game and stuff");
 		Button button = new Button("Click Me!");
 		button.setOnAction(this::startGame);
@@ -44,24 +43,20 @@ public class GameWindow extends Application{
 	}
 	
 	public void startGame(ActionEvent event) {
-		test = new Connect4GameLogic();
-		test.setUpGrid();//this goes back to the the specified class
-		//calling the setUpGrid method
-
-		idk = test.getGrid();//idk takes whatever there is from the
-		//GameBoard array and idk is itself an array now with 
-		//7 rows and 7 columns
+		board = game.getBoard();//board takes whatever there is from the
+		//GameBoard array and board is itself an array now with 
+		//6 rows and 7 columns
 		
-		for(int x = 0; x < idk.length;x++) {
+		for(int x = 0; x < board.length;x++) {
 			for(int y = 0; y < 7; y++) {
 				Circle c = new Circle(35);
-				if(idk[x][y] == 0) {
+				if(board[x][y] == 0) {
 					c.setFill(Color.RED);//ok this is setting up the 
 					//color red value in the first row firt col basically
 					//the first circle
 					gridy.add(c, x, y );//this is also affected by the
 					//if statement
-				}else if(idk[x][y] == 1) {
+				}else if(board[x][y] == 1) {
 					c.setFill(Color.YELLOW);
 					gridy.add(c, x, y );
 				}
