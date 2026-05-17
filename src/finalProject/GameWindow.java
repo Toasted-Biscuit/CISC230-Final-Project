@@ -14,41 +14,77 @@ public class GameWindow extends Application {
     private Circle[][] circles = new Circle[6][7];
     private Connect4 game = new Connect4();
     private Label turnLabel;
+    Button[] chipButtons;
+    Button startButton;
+    private Label questionText;
+    private Button answerA;
+    private Button answerB;
+    private Button answerC;
+    private Button answerD;
+    private Button questionButton;
+    private boolean questionActive = false;
+    private int correctAnswer;
+    
+  
     
     public void start(Stage ps) {
         GridPane root = new GridPane();
+        root.setAlignment(javafx.geometry.Pos.CENTER); //looked this up
+        root.setHgap(15);
+        root.setVgap(15);
+        root.setStyle("-fx-padding: 20; -fx-background-color: #f0f0f0;"); //had to look this up
 
-        root.setHgap(10);
-        root.setVgap(10);
-
+        //Title and control Buttons
         Label title = new Label("Connect 4");
+        title.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"); //looked up
         turnLabel = new Label("Yellow's Turn");
+        turnLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;"); //looked up
         Label messageLabel = new Label("Game messages will appear here.");
 
-        Button startButton = new Button("Start Game");
-        Button questionButton = new Button("Question");
+        startButton = new Button("Start Game");
+        startButton.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"); //looked up
+        startButton.setDisable(false);
+        startButton.setOnAction(this::startButtonAction);
+        questionButton = new Button("Question");
+        questionButton.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;"); //looked up
+        questionButton.setDisable(true);
+        questionButton.setOnAction(this::askQuestion1);
 
+        GridPane topControls = new GridPane();
+        topControls.setHgap(15);
+        topControls.setAlignment(javafx.geometry.Pos.CENTER);
+        topControls.add(startButton, 0, 0);
+        topControls.add(questionButton, 1, 0);
+        
         GridPane buttonRow = new GridPane();
-        buttonRow.setHgap(20);
+        buttonRow.setHgap(5);
+        buttonRow.setAlignment(javafx.geometry.Pos.CENTER);
         
         // An array full of buttons meant to place chips when pressed
-        Button[] chipButtons = new Button[7];
+        chipButtons = new Button[7];
         for (int i = 0; i < chipButtons.length; i++) {
-        	chipButtons[i] = new Button("" + i);
+        	chipButtons[i] = new Button("▼");
         	chipButtons[i].setUserData(i);
         	chipButtons[i].setOnAction(this::placeChip);
+        	chipButtons[i].setMinWidth(50);
+        	chipButtons[i].setPrefWidth(50);
+        	chipButtons[i].setMinHeight(35);
+        	chipButtons[i].setStyle("-fx-font-size: 16px; -fx-background-color: #ecf0f1; -fx-border-color: #95a5a6; -fx-border-width: 2;");
+        	chipButtons[i].setDisable(true);
         	buttonRow.add(chipButtons[i], i, 0);
         }
 
         GridPane boardGrid = new GridPane();
         boardGrid.setHgap(5);
         boardGrid.setVgap(5);
+        boardGrid.setStyle("-fx-padding: 15; -fx-background-color: #3498db; -fx-background-radius: 10;");
+        boardGrid.setAlignment(javafx.geometry.Pos.CENTER);
 
         for (int row = 0; row < circles.length; row++) {
             for (int col = 0; col < circles[row].length; col++) {
                 Circle c = new Circle(25);
                 c.setFill(Color.WHITE);
-                c.setStroke(Color.BLACK);
+                c.setStroke(Color.DARKGRAY);
 
                 circles[row][col] = c;
 
@@ -57,17 +93,45 @@ public class GameWindow extends Application {
         }
 
         GridPane questionArea = new GridPane();
+        questionArea.setAlignment(javafx.geometry.Pos.CENTER);
         questionArea.setHgap(10);
         questionArea.setVgap(10);
+        questionArea.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-width: 2; -fx-border-radius: 5;");
 
         Label questionTitle = new Label("Question Area");
-        Label questionText = new Label("Question text will go here.");
+        questionTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        questionText = new Label("Question text will go here.");
 
-        Button answerA = new Button("Answer A");
-        Button answerB = new Button("Answer B");
-        Button answerC = new Button("Answer C");
-        Button answerD = new Button("Answer D");
-
+        questionText = new Label("Click 'Question' to begin");
+        questionText.setStyle("-fx-font-size: 14px;");
+        questionText.setWrapText(true);
+        questionText.setMaxWidth(400);
+        
+     
+        answerA = new Button("Answer A");
+        answerB = new Button("Answer B");
+        answerC = new Button("Answer C");
+        answerD = new Button("Answer D");
+        
+        
+        String answerButtonStyle = "-fx-min-width: 150; -fx-padding: 10; -fx-font-size: 13px;";
+        answerA.setStyle(answerButtonStyle);
+        answerB.setStyle(answerButtonStyle);
+        answerC.setStyle(answerButtonStyle);
+        answerD.setStyle(answerButtonStyle);
+        
+        answerA.setUserData(0);
+        answerB.setUserData(1);
+        answerC.setUserData(2);
+        answerD.setUserData(3);
+        
+        setQuetionsDisabled();
+        
+        answerA.setOnAction(this::checkAnswer);
+        answerB.setOnAction(this::checkAnswer);
+        answerC.setOnAction(this::checkAnswer);
+        answerD.setOnAction(this::checkAnswer);
+        
         questionArea.add(questionTitle, 0, 0);
         questionArea.add(questionText, 0, 1);
         questionArea.add(answerA, 0, 2);
@@ -76,16 +140,14 @@ public class GameWindow extends Application {
         questionArea.add(answerD, 1, 3);
 
         root.add(title, 0, 0);
-        root.add(startButton, 1, 0);
-        root.add(questionButton, 2, 0);
-
-        root.add(turnLabel, 0, 1);
-        root.add(buttonRow, 0, 2);
-        root.add(boardGrid, 0, 3);
-        root.add(messageLabel, 0, 4);
+        root.add(topControls, 0, 1);
+        root.add(turnLabel, 0, 2);
+        root.add(buttonRow, 0, 3);
+        root.add(boardGrid, 0, 4);
         root.add(questionArea, 0, 5);
 
-        Scene scene = new Scene(root, 650, 650);
+    
+        Scene scene = new Scene(root, 700, 850);
 
         ps.setTitle("Connect 4");
         ps.setScene(scene);
@@ -94,6 +156,8 @@ public class GameWindow extends Application {
     
     // When the chip buttons are pressed, places a chip in the column assigned to the button
     public void placeChip(ActionEvent e) {
+    	questionButton.setDisable(false);
+    
     	int col = (int)((Button)e.getSource()).getUserData();
     	game.placeChip(col);
     	updateBoard();
@@ -108,13 +172,21 @@ public class GameWindow extends Application {
     	// TODO Replace println with gui visuals and make it stop the game
     	if (winner == Connect4.YELLOW) {
     		System.out.println("Yellow Wins!!!");
+    		setButtonsDisabled();
+    		setQuetionsDisabled();
+    		questionButton.setDisable(true);
     	} else if (winner == Connect4.RED) {
     		System.out.println("Red Wins!!!");
+    		setButtonsDisabled();
+    		setQuetionsDisabled();
+    		questionButton.setDisable(true);
     	}
+    	setButtonsDisabled();
     }
     
     // Updates the onscreen board to reflect the game board
     public void updateBoard() {
+  
     	int[][] board = game.getBoard();
     	
     	for (int r = 0; r < board.length; r++) {
@@ -128,6 +200,67 @@ public class GameWindow extends Application {
     			}
     		}
     	}
+    }
+    
+    
+    public void startButtonAction(ActionEvent evnet) {
+    	startButton.setDisable(true);
+    	setQuetionsDisabled();
+    	questionButton.setDisable(false);
+    	
+    }
+    
+    public void setButtonsDisabled() {
+    	for (Button button : chipButtons) {
+    		button.setDisable(true);
+    	}
+    }
+    public void setButtonsEnabled() {
+    	for (Button button : chipButtons) {
+    		button.setDisable(false);
+    	}
+    }
+    public void askQuestion1(ActionEvent event) {
+    	askQuestion();
+    	questionButton.setDisable(true);
+    }
+    
+    public void askQuestion() {
+    	setQuetionsEnabled();
+    }
+    
+    public void checkAnswer(ActionEvent event) {
+    	int selectedAnswer = (int)((Button)event.getSource()).getUserData();
+    	setQuetionsDisabled();
+    	if ( selectedAnswer == correctAnswer) {
+    		questionText.setText("Correct, Now place your chip.");
+    		setButtonsEnabled();
+    		questionActive = false;
+    	} else {
+    		questionText.setText("Wrong! Next players turn.");
+    		game.changeTurn();
+    		questionButton.setDisable(false);
+    		
+    		if(game.getTurn() == Connect4.YELLOW) {
+    			turnLabel.setText("Yellow's Turn");
+    		}else {
+    			turnLabel.setText("Red's Turn");
+    		}
+    	}
+    }
+    
+    public void setQuetionsDisabled() {
+    	answerA.setDisable(true);
+    	answerB.setDisable(true);
+    	answerC.setDisable(true);
+    	answerD.setDisable(true);
+    }
+    
+    public void setQuetionsEnabled() {
+    	answerA.setDisable(false);
+    	answerB.setDisable(false);
+    	answerC.setDisable(false);
+    	answerD.setDisable(false);
     }
 
     public static void main(String[] args) {
