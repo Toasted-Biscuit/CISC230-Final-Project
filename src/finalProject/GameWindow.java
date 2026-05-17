@@ -32,8 +32,8 @@ public class GameWindow extends Application {
         buttonRow.setHgap(20);
         
         // An array full of buttons meant to place chips when pressed
-        Button[] chipButtons = new Button[6];
-        for (int i = 0; i < 6; i++) {
+        Button[] chipButtons = new Button[7];
+        for (int i = 0; i < 7; i++) {
         	chipButtons[i] = new Button("" + i);
         	chipButtons[i].setUserData(i);
         	chipButtons[i].setOnAction(this::placeChip);

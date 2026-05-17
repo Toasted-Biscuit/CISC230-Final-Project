@@ -72,11 +72,7 @@ public class Connect4 {
 	
 	// Sets the turn to the next player
 	private void changeTurn() {
-		if (turn == YELLOW) {
-			turn = RED;
-		} else {
-			turn = YELLOW;
-		}
+		turn = (turn == YELLOW) ? RED : YELLOW;
 	}
 	
 	public int getTurn() {
