@@ -33,7 +33,7 @@ public class GameWindow extends Application {
         
         // An array full of buttons meant to place chips when pressed
         Button[] chipButtons = new Button[7];
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < chipButtons.length; i++) {
         	chipButtons[i] = new Button("" + i);
         	chipButtons[i].setUserData(i);
         	chipButtons[i].setOnAction(this::placeChip);
