@@ -1,6 +1,7 @@
 package finalProject;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,7 +12,9 @@ import javafx.stage.Stage;
 
 public class GameWindow extends Application {
     private Circle[][] circles = new Circle[6][7];
-
+    private Connect4 game = new Connect4();
+    private Label turnLabel;
+    
     public void start(Stage ps) {
         GridPane root = new GridPane();
 
@@ -19,7 +22,7 @@ public class GameWindow extends Application {
         root.setVgap(10);
 
         Label title = new Label("Connect 4");
-        Label turnLabel = new Label("Yellow's Turn");
+        turnLabel = new Label("Yellow's Turn");
         Label messageLabel = new Label("Game messages will appear here.");
 
         Button startButton = new Button("Start Game");
@@ -27,22 +30,15 @@ public class GameWindow extends Application {
 
         GridPane buttonRow = new GridPane();
         buttonRow.setHgap(20);
-
-        Button col0 = new Button("0");
-        Button col1 = new Button("1");
-        Button col2 = new Button("2");
-        Button col3 = new Button("3");
-        Button col4 = new Button("4");
-        Button col5 = new Button("5");
-        Button col6 = new Button("6");
-
-        buttonRow.add(col0, 0, 0);
-        buttonRow.add(col1, 1, 0);
-        buttonRow.add(col2, 2, 0);
-        buttonRow.add(col3, 3, 0);
-        buttonRow.add(col4, 4, 0);
-        buttonRow.add(col5, 5, 0);
-        buttonRow.add(col6, 6, 0);
+        
+        // An array full of buttons meant to place chips when pressed
+        Button[] chipButtons = new Button[6];
+        for (int i = 0; i < 6; i++) {
+        	chipButtons[i] = new Button("" + i);
+        	chipButtons[i].setUserData(i);
+        	chipButtons[i].setOnAction(this::placeChip);
+        	buttonRow.add(chipButtons[i], i, 0);
+        }
 
         GridPane boardGrid = new GridPane();
         boardGrid.setHgap(5);
@@ -94,6 +90,44 @@ public class GameWindow extends Application {
         ps.setTitle("Connect 4");
         ps.setScene(scene);
         ps.show();
+    }
+    
+    // When the chip buttons are pressed, places a chip in the column assigned to the button
+    public void placeChip(ActionEvent e) {
+    	int col = (int)((Button)e.getSource()).getUserData();
+    	game.placeChip(col);
+    	updateBoard();
+    	
+    	if (game.getTurn() == 1) {
+    		turnLabel.setText("Yellow's Turn");
+    	} else {
+    		turnLabel.setText("Red's Turn");
+    	}
+    	
+    	int winner = game.checkWinner();
+    	// TODO Replace println with gui visuals and make it stop the game
+    	if (winner == Connect4.YELLOW) {
+    		System.out.println("Yellow Wins!!!");
+    	} else if (winner == Connect4.RED) {
+    		System.out.println("Red Wins!!!");
+    	}
+    }
+    
+    // Updates the onscreen board to reflect the game board
+    public void updateBoard() {
+    	int[][] board = game.getBoard();
+    	
+    	for (int r = 0; r < board.length; r++) {
+    		for (int c = 0; c < board[r].length; c++) {
+    			if (board[r][c] == Connect4.YELLOW) {
+    				circles[r][c].setFill(Color.YELLOW);
+    			} else if (board[r][c] == Connect4.RED) {
+    				circles[r][c].setFill(Color.RED);
+    			} else {
+    				circles[r][c].setFill(Color.WHITE);
+    			}
+    		}
+    	}
     }
 
     public static void main(String[] args) {

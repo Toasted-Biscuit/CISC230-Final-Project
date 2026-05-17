@@ -16,22 +16,19 @@ public class Connect4BoardExample {
 		
 		c4.displayBoard();
 		
-		System.out.println(c4.checkWinner());
-		
+		int winner = c4.checkWinner();
+		if (winner == c4.YELLOW) {
+			System.out.println("Yellow Wins!!!");
+		} else if (winner == c4.RED) {
+			System.out.println("Red Wins!!!");
+		}
 	}
 	
 	// Plays a game by placing chips in random columns. Stops when someone wins
 	public static void randomGame(Connect4 c4, int rounds) {
 		Random rand = new Random();
-		int turn = Connect4.YELLOW;
-		while (c4.checkWinner() == 0 && rounds > 0) {
-			c4.placeChip(rand.nextInt(0, 7), turn);
-			
-			if (turn == Connect4.YELLOW) {
-				turn = Connect4.RED;
-			} else {
-				turn = Connect4.YELLOW;
-			}
+		while (c4.checkWinner() == -1 && rounds > 0) {
+			c4.placeChip(rand.nextInt(0, 7));
 			rounds--;
 		}
 	}

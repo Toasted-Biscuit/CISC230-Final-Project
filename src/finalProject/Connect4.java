@@ -8,10 +8,12 @@ public class Connect4 {
 	public static final int YELLOW = 1;
 	public static final int RED = 2;
 	
+	private int turn; // 0 = Yellow, 1 = Red
 	private int[][] board;
 	
 	public Connect4() {
 		board = new int[6][7]; // Default values of array is 0
+		turn = 1;
 	}
 	
 	// Returns the lowest EMPTY row index for the given column. Meant to aid in placing chips
@@ -25,8 +27,23 @@ public class Connect4 {
 		return -1;
 	}
 	
-	// Places a given chip color in a given column
-	// pass constants YELLOW and RED for chip
+	// Places a chip in the given column. Chip is determined using the current turn
+	public void placeChip(int col) {
+		int row = getAvailableIndex(col);
+		
+		if (row != -1) {
+			board[row][col] = turn;
+			changeTurn();
+		} else {
+			System.out.println("Attempted to place chip in full column");
+		}
+	}
+	
+	/*
+	 * Places a given chip in a given column
+	 * Pass Constants YELLOW and RED for chip
+	 * Not meant to be used in actual gameplay, JUST FOR TESTING
+	 */
 	public void placeChip(int col, int chip) {
 		int row = getAvailableIndex(col);
 		
@@ -38,7 +55,7 @@ public class Connect4 {
 	}
 	
 	// Checks board from left to right and up to down. Finds the first instance of
-	// a 4 in a row pattern and returns the chip color of the winner. Returns 0 if there are no winners
+	// a 4 in a row pattern and returns the chip color of the winner. Returns -1 if there are no winners
 	public int checkWinner() {
 		for (int r = 0; r < board.length; r++) {
 			for (int c = 0; c < board[r].length; c++) {
@@ -50,7 +67,20 @@ public class Connect4 {
 				}
 			}
 		}
-		return 0;
+		return -1;
+	}
+	
+	// Sets the turn to the next player
+	private void changeTurn() {
+		if (turn == YELLOW) {
+			turn = RED;
+		} else {
+			turn = YELLOW;
+		}
+	}
+	
+	public int getTurn() {
+		return turn;
 	}
 	
 	/* Helper method for checkWinner()
