@@ -15,6 +15,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.media.AudioClip;
+
+import java.io.File;
 
 public class GameWindow extends Application {
     private Circle[][] circles = new Circle[6][7];
@@ -26,7 +29,11 @@ public class GameWindow extends Application {
     private Text explanationText;
     private Button answerA, answerB, answerC, answerD;
     private Button questionButton;
+    private Text Winner;
     private boolean questionActive = false;
+    GridPane topControls;
+    private AudioClip backgroundAudio;
+    private AudioClip chipPlacedAudio;
     private Quiz question;
     
     private boolean gameOver = false;
@@ -39,6 +46,18 @@ public class GameWindow extends Application {
     private final int SINGLE_PLAYER = 1;
     
     public void start(Stage ps) {
+    	backgroundAudio = new AudioClip(new File("BackgroundAudio.mp3").toURI().toString());
+    	backgroundAudio.setVolume(0.25);
+    	backgroundAudio.play();
+    	
+    	File chipPlacedAudioFile = new File("ChipPlacedAudio.mp3");
+    	String chipPlacedaudioURI = chipPlacedAudioFile.toURI().toString();
+    	chipPlacedAudio = new AudioClip(chipPlacedaudioURI);
+    	chipPlacedAudio.setVolume(0.8);
+    	
+    	Winner = new Text("winner");
+    	Winner.setFont(Font.font("", FontWeight.BOLD, 50));
+    	Winner.setVisible(false);
     	stage = ps;
     	// TITLE SCREEN ----------------------
     	// Title and credits
@@ -104,11 +123,13 @@ public class GameWindow extends Application {
         questionButton.setDisable(true);
         questionButton.setOnAction(this::askQuestionClick);
 
-        GridPane topControls = new GridPane();
+        topControls = new GridPane();
+        topControls.setVisible(true);
         topControls.setHgap(15);
         topControls.setAlignment(Pos.CENTER);
         topControls.add(startButton, 0, 0);
         topControls.add(questionButton, 1, 0);
+        topControls.add(Winner, 0, 0);
         
         GridPane buttonRow = new GridPane();
         buttonRow.setHgap(5);
@@ -199,6 +220,7 @@ public class GameWindow extends Application {
         questionArea.add(explanationText, 0, 4);
 
         root.add(title, 0, 0);
+        root.add(Winner, 0, 1);
         root.add(topControls, 0, 1);
         root.add(turnLabel, 0, 2);
         root.add(buttonRow, 0, 3);
@@ -223,6 +245,7 @@ public class GameWindow extends Application {
     
     // When the chip buttons are pressed, places a chip in the column assigned to the button
     public void placeChip(ActionEvent e) {
+    	chipPlacedAudio.play();
     	int col = (int)((Button)e.getSource()).getUserData();
     	
     	// Only continues game if placed in open location
@@ -242,23 +265,40 @@ public class GameWindow extends Application {
     
     public void checkWin() {
     	int winner = game.checkWinner();
+    	AudioClip WinningAudio = new AudioClip(new File("WinningAudio.mp3").toURI().toString());
     	// TODO Replace println with gui visuals and make it stop the game
     	if (winner == Connect4.YELLOW) {
     		System.out.println("Yellow Wins!!!");
     		setButtonsDisabled();
     		setQuestionsDisabled();
     		questionButton.setDisable(true);
+    		topControls.setVisible(false);
+    		Winner.setText("Yellow Wins");
+    		Winner.setVisible(true);
     		gameOver = true;
+    		backgroundAudio.stop();
+    		WinningAudio.setVolume(0.25);
+    		WinningAudio.play();
     	} else if (winner == Connect4.RED) {
     		System.out.println("Red Wins!!!");
     		setButtonsDisabled();
     		setQuestionsDisabled();
+    		Winner.setText("Red Wins");
+    		topControls.setVisible(false);
+    		Winner.setVisible(true);
     		questionButton.setDisable(true);
     		gameOver = true;
+    		backgroundAudio.stop();
+    		WinningAudio.setVolume(0.25);
+    		WinningAudio.play();
     	} else if (winner == Connect4.EMPTY) {
     		System.out.println("It's a Tie!!!");
     		setButtonsDisabled();
     		setQuestionsDisabled();
+    		topControls.setVisible(false);
+    		Winner.setText("Its a tie");
+    		Winner.setVisible(true);
+    		
     		questionButton.setDisable(true);
     		gameOver = true;
     	}
