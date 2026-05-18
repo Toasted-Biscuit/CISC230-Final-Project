@@ -48,6 +48,7 @@ public class GameWindow extends Application {
     public void start(Stage ps) {
     	backgroundAudio = new AudioClip(new File("BackgroundAudio.mp3").toURI().toString());
     	backgroundAudio.setVolume(0.25);
+    	backgroundAudio.setCycleCount(AudioClip.INDEFINITE);
     	backgroundAudio.play();
     	
     	File chipPlacedAudioFile = new File("ChipPlacedAudio.mp3");
