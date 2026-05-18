@@ -1,7 +1,13 @@
 package finalProject;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import java.io.File;
+
 // Acts as the Connect4 game logic and board
-public class Connect4 {
+public class Connect4 extends Leaderboardable {
 	
 	// TODO consider making a chip class instead of numbers. Might be better or might not be
 	public static final int EMPTY = 0;
@@ -9,6 +15,7 @@ public class Connect4 {
 	public static final int RED = 2;
 	
 	private int turn; // 0 = Yellow, 1 = Red
+	private int totalTurns;
 	private int[][] board;
 	
 	public Connect4() {
@@ -108,6 +115,7 @@ public class Connect4 {
 	// Sets the turn to the next player
 	public void changeTurn() {
 		turn = (turn == YELLOW) ? RED : YELLOW;
+		totalTurns++;
 	}
 	
 	public int getTurn() {
@@ -173,6 +181,58 @@ public class Connect4 {
 			}
 			System.out.println();
 		}
+	}
+	
+	/*
+	 * Writes a new name to the leaderboard text file and reorders it to go from best score to worse score
+	 */
+	public boolean writeLeaderboard(String name) {
+		try {
+			// Name can't have : because it messes with some logic
+			if (name.contains(":")) {
+				throw new InputMismatchException();
+			}
+			
+			File leaderFile = new File("Leaderboard.txt");
+			leaderFile.createNewFile();
+			Scanner scan = new Scanner(leaderFile);
+			
+			// Creates an arrayList and adds all current leaderboard entries
+			java.util.ArrayList<String> leaderboard = new java.util.ArrayList<String>();
+			while (scan.hasNextLine()) {
+				leaderboard.add(scan.nextLine());	
+			}
+			
+			// Adds newest leaderboard entry using given name
+			leaderboard.add(name + ": " + totalTurns);
+			
+			// Creates an array of scores storing the total turns for each leaderboard entry
+			int[] scores = new int[leaderboard.size()];
+			for (int i = 0; i < leaderboard.size(); i++) {
+				String s = leaderboard.get(i);
+				scores[i] = Integer.parseInt(s.substring(s.indexOf(':') + 2));
+			}
+			
+			// Reorders the leaderboard arraylist using the scores to go from best score to worst score
+			// Bubble sort YAY!!!!
+			bubbleSort(leaderboard, scores);
+			
+			// Writes the newly ordered leaderboard to the leaderboard file
+			FileWriter fp = new FileWriter(leaderFile);
+			for (String s : leaderboard) {
+				fp.append(s + "\n");
+			}
+			fp.close();
+			return true;
+		// Exception handling
+		} catch (NumberFormatException e) {
+			System.out.println("Error: Cannot find score in leaderboard data");
+		} catch (InputMismatchException e) {
+			System.out.println("Error: Name cannot contain \":\"");
+		} catch (IOException e) {
+			System.out.println("Error: Cannot access leaderboard");
+		}
+		return false;
 	}
 	
 	// Returns the board

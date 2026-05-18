@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.media.AudioClip;
+import javafx.scene.control.TextField;
 
 import java.io.File;
 
@@ -29,13 +30,15 @@ public class GameWindow extends Application {
     private Text explanationText;
     private Button answerA, answerB, answerC, answerD;
     private Button questionButton;
-    private Text Winner;
     private boolean questionActive = false;
     GridPane topControls;
     private AudioClip backgroundAudio;
     private AudioClip chipPlacedAudio;
     private Quiz question;
     
+    private Text Winner;
+    TextField leaderboardName;
+    Button leaderboardButton;
     private boolean gameOver = false;
     
     private Stage stage;
@@ -46,6 +49,7 @@ public class GameWindow extends Application {
     private final int SINGLE_PLAYER = 1;
     
     public void start(Stage ps) {
+    	
     	backgroundAudio = new AudioClip(new File("BackgroundAudio.mp3").toURI().toString());
     	backgroundAudio.setVolume(0.25);
     	backgroundAudio.setCycleCount(AudioClip.INDEFINITE);
@@ -59,6 +63,19 @@ public class GameWindow extends Application {
     	Winner = new Text("winner");
     	Winner.setFont(Font.font("", FontWeight.BOLD, 70));
     	Winner.setVisible(false);
+    	
+    	leaderboardName = new TextField();
+    	leaderboardName.setPromptText("Enter your name here!");
+    	leaderboardName.setVisible(false);
+    	
+    	leaderboardButton = new Button("Enter");
+    	leaderboardButton.setVisible(false);
+    	leaderboardButton.setOnAction(this::leaderboardSubmit);
+    	GridPane leaderboardPane = new GridPane();
+    	leaderboardPane.setAlignment(Pos.CENTER);
+    	leaderboardPane.add(leaderboardName, 0, 0);
+    	leaderboardPane.add(leaderboardButton, 1, 0);
+    	
     	stage = ps;
     	// TITLE SCREEN ----------------------
     	// Title and credits
@@ -221,12 +238,13 @@ public class GameWindow extends Application {
 
         root.add(title, 0, 0);
         root.add(Winner, 0, 1);
+        root.add(leaderboardPane, 0, 2);
         root.add(topControls, 0, 1);
         root.add(turnLabel, 0, 2);
         root.add(buttonRow, 0, 3);
         root.add(boardGrid, 0, 4);
         root.add(questionArea, 0, 5);
-        GridPane.setHalignment(Winner, javafx.geometry.HPos.CENTER); 
+        GridPane.setHalignment(Winner, HPos.CENTER); 
 
     
         gameScreen = new Scene(root, 700, 870);
@@ -285,6 +303,9 @@ public class GameWindow extends Application {
     		WinningAudio.setVolume(0.25);
     		WinningAudio.play();
     		
+    		leaderboardButton.setVisible(true);
+			leaderboardName.setVisible(true);
+    		
     		// Red wins
     	} else if (winner == Connect4.RED) {
     		setButtonsDisabled();
@@ -300,6 +321,11 @@ public class GameWindow extends Application {
     		WinningAudio.setVolume(0.25);
     		WinningAudio.play();
     		
+    		if (mode != SINGLE_PLAYER) {
+    			leaderboardButton.setVisible(true);
+    			leaderboardName.setVisible(true);
+    		}
+    		
     		// Tie game
     	} else if (winner == Connect4.EMPTY) {
     		setButtonsDisabled();
@@ -311,6 +337,14 @@ public class GameWindow extends Application {
     		
     		questionButton.setDisable(true);
     		gameOver = true;
+    	}
+    }
+    
+    public void leaderboardSubmit(ActionEvent e) {
+    	String name = leaderboardName.getText();
+    	if (game.writeLeaderboard(name)) {
+    		leaderboardButton.setVisible(false);
+    		leaderboardName.setVisible(false);    		
     	}
     }
     
