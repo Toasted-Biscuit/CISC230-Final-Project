@@ -2,6 +2,7 @@ package finalProject;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -43,7 +44,9 @@ public class GameWindow extends Application {
     
     private Stage stage;
     private Scene gameScreen;
+    private Scene SinglePlayerDifficultyscene;
     private int mode;
+    private int singlePlayerMode;
     // Game modes (constants meant for code readability)
     private final int VERSUS = 0;
     private final int SINGLE_PLAYER = 1;
@@ -127,9 +130,9 @@ public class GameWindow extends Application {
 
         //Title and control Buttons
         Label title = new Label("Connect 4");
-        title.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"); //looked up
+        title.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"); 
         turnLabel = new Label("Yellow's Turn");
-        turnLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;"); //looked up
+        turnLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;"); 
         Label messageLabel = new Label("Game messages will appear here.");
 
         startButton = new Button("Start Game");
@@ -248,6 +251,48 @@ public class GameWindow extends Application {
 
     
         gameScreen = new Scene(root, 700, 870);
+        
+        //Makes a new gridpane for the difficulty selection page
+        GridPane difficultyScreenGridPane = new GridPane();
+        Label title1 = new Label("Connect 4");
+        title1.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"); 
+        
+        //Making the buttons
+        Button Difficulty1 = new Button("Easy");
+        Button Difficulty2 = new Button("Medium");
+        Button Difficulty3 = new Button("Hard");
+        
+        //Setting the style of the buttons
+        Difficulty1.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
+        Difficulty2.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
+        Difficulty3.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
+        
+        //Sets the onAction of the buttons
+        Difficulty1.setOnAction(this::singlePlayerWithDif);
+        Difficulty2.setOnAction(this::singlePlayerWithDif);
+        Difficulty3.setOnAction(this::singlePlayerWithDif);
+        
+        //Sets the UserData of the buttons
+        Difficulty1.setUserData(1);
+        Difficulty2.setUserData(2);
+        Difficulty3.setUserData(3);
+        
+        //Adds it all to the grid pane
+        difficultyScreenGridPane.add(title1, 0, 0);
+        difficultyScreenGridPane.add(Difficulty1,0,1);
+        difficultyScreenGridPane.add(Difficulty2,0,2);
+        difficultyScreenGridPane.add(Difficulty3,0,3);
+        
+        //Making it look pretty
+        difficultyScreenGridPane.setHgap(10);
+        difficultyScreenGridPane.setVgap(10);
+        difficultyScreenGridPane.setAlignment(Pos.CENTER);
+        difficultyScreenGridPane.setHalignment(Difficulty1, javafx.geometry.HPos.CENTER); 
+        difficultyScreenGridPane.setHalignment(Difficulty2, javafx.geometry.HPos.CENTER); 
+        difficultyScreenGridPane.setHalignment(Difficulty3, javafx.geometry.HPos.CENTER); 
+       
+        //Making the scene and adding the gridPane
+        SinglePlayerDifficultyscene = new Scene(difficultyScreenGridPane, 700, 870);
     }
     
     // Switches the screen to the game UI and sets the mode to versus
@@ -258,10 +303,16 @@ public class GameWindow extends Application {
     
     // Switches to screen to the game UI and sets the mode to single player
     public void singlePlayerClick(ActionEvent e) {
-    	stage.setScene(gameScreen);
-    	mode = SINGLE_PLAYER;
+    	stage.setScene(SinglePlayerDifficultyscene);
+
     }
     
+    public void singlePlayerWithDif(ActionEvent e) {
+    	singlePlayerMode = (int)((Button)e.getSource()).getUserData();
+    	stage.setScene(gameScreen);
+    	mode = SINGLE_PLAYER;
+    	
+    }
     // When the chip buttons are pressed, places a chip in the column assigned to the button
     public void placeChip(ActionEvent e) {
     	chipPlacedAudio.play();
@@ -349,9 +400,34 @@ public class GameWindow extends Application {
     }
     
     public void botTurn() {
-    	game.placeRandomChip();
-    	updateBoard();
-    	checkWin();
+    	if(singlePlayerMode == 1 ) {
+    		if((Math.random()*100) > 50) {
+    			game.placeRandomChip();
+    	    	updateBoard();
+    	    	checkWin();
+    		}else {
+    			game.changeTurn();
+    			turnLabel.setText("Yellow's Turn");
+    		}
+    	}
+    	if(singlePlayerMode == 2 ) {
+    		if((Math.random()*100) > 25) {
+    			game.placeRandomChip();
+    	    	updateBoard();
+    	    	checkWin();
+    		}else {
+    			game.changeTurn();
+    			turnLabel.setText("Yellow's Turn");
+    		}
+    	}
+    	if(singlePlayerMode == 3 ) {
+    		game.placeRandomChip();
+    		updateBoard();
+    		checkWin();	
+    	}
+    	//game.placeRandomChip();
+    	//updateBoard();
+    	//checkWin();
     }
     
     // Updates the onscreen board to reflect the game board
