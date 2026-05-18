@@ -54,7 +54,7 @@ public class GameWindow extends Application {
     	File chipPlacedAudioFile = new File("ChipPlacedAudio.mp3");
     	String chipPlacedaudioURI = chipPlacedAudioFile.toURI().toString();
     	chipPlacedAudio = new AudioClip(chipPlacedaudioURI);
-    	chipPlacedAudio.setVolume(0.8);
+    	chipPlacedAudio.setVolume(0.7);
     	
     	Winner = new Text("winner");
     	Winner.setFont(Font.font("", FontWeight.BOLD, 70));
@@ -269,9 +269,9 @@ public class GameWindow extends Application {
     	Winner.setStroke(Color.BLACK);
     	Winner.setStrokeWidth(2);
     	AudioClip WinningAudio = new AudioClip(new File("WinningAudio.mp3").toURI().toString());
-    	// TODO Replace println with gui visuals and make it stop the game
+    	
+    	// Yellow Wins
     	if (winner == Connect4.YELLOW) {
-    		System.out.println("Yellow Wins!!!");
     		setButtonsDisabled();
     		setQuestionsDisabled();
     		questionButton.setDisable(true);
@@ -284,8 +284,9 @@ public class GameWindow extends Application {
     		backgroundAudio.stop();
     		WinningAudio.setVolume(0.25);
     		WinningAudio.play();
+    		
+    		// Red wins
     	} else if (winner == Connect4.RED) {
-    		System.out.println("Red Wins!!!");
     		setButtonsDisabled();
     		setQuestionsDisabled();
     		Winner.setText("Red Wins");
@@ -298,8 +299,9 @@ public class GameWindow extends Application {
     		backgroundAudio.stop();
     		WinningAudio.setVolume(0.25);
     		WinningAudio.play();
+    		
+    		// Tie game
     	} else if (winner == Connect4.EMPTY) {
-    		System.out.println("It's a Tie!!!");
     		setButtonsDisabled();
     		setQuestionsDisabled();
     		topControls.setVisible(false);
