@@ -94,7 +94,7 @@ public class GameWindow extends Application {
     		GridPane.setHalignment(n, HPos.CENTER);;
     	}
     	
-    	Scene titleScreen = new Scene(titleGrid, 700, 850);
+    	Scene titleScreen = new Scene(titleGrid, 700, 870);
     	
     	stage.setScene(titleScreen);
         ps.setTitle("Connect 4");
@@ -229,7 +229,7 @@ public class GameWindow extends Application {
         GridPane.setHalignment(Winner, javafx.geometry.HPos.CENTER); 
 
     
-        gameScreen = new Scene(root, 700, 850);
+        gameScreen = new Scene(root, 700, 870);
     }
     
     // Switches the screen to the game UI and sets the mode to versus
