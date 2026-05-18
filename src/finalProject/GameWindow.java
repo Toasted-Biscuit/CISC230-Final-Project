@@ -181,7 +181,7 @@ public class GameWindow extends Application {
         questionText = new Label("Click 'Question' to begin");
         questionText.setStyle("-fx-font-size: 14px;");
         questionText.setWrapText(true);
-        questionText.setMaxWidth(400);
+        questionText.setMaxWidth(600);
         questionText.setWrapText(true);
         
         explanationText = new Text("");
@@ -212,7 +212,7 @@ public class GameWindow extends Application {
         answerD.setOnAction(this::checkAnswer);
         
         questionArea.add(questionTitle, 0, 0);
-        questionArea.add(questionText, 0, 1);
+        questionArea.add(questionText, 0, 1, 2, 1);
         questionArea.add(answerA, 0, 2);
         questionArea.add(answerB, 1, 2);
         questionArea.add(answerC, 0, 3);
