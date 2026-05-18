@@ -69,7 +69,7 @@ public enum Quiz {
 		            	  "B. Lightbulbs",
 		            	  "C. Plastic bags",
 		            	  "D. Batteries"},
-			"Glass is accepted for recycling in the blue recycling bins around campus. The other items can be disposed of through the specialized recycling bins on campus."),
+			"Glass is accepted for recycling in the blue recycling bins around campus.\nThe other items can be disposed of through the specialized recycling bins on campus."),
 	
 	QUESTION10("All of the following are accepted for organics recycling EXCEPT...", 2,  // C
 			new String[] {"A. All food scraps",

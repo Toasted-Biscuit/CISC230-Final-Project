@@ -56,7 +56,7 @@ public class GameWindow extends Application {
     	chipPlacedAudio.setVolume(0.8);
     	
     	Winner = new Text("winner");
-    	Winner.setFont(Font.font("", FontWeight.BOLD, 50));
+    	Winner.setFont(Font.font("", FontWeight.BOLD, 70));
     	Winner.setVisible(false);
     	stage = ps;
     	// TITLE SCREEN ----------------------
@@ -129,7 +129,6 @@ public class GameWindow extends Application {
         topControls.setAlignment(Pos.CENTER);
         topControls.add(startButton, 0, 0);
         topControls.add(questionButton, 1, 0);
-        topControls.add(Winner, 0, 0);
         
         GridPane buttonRow = new GridPane();
         buttonRow.setHgap(5);
@@ -226,6 +225,7 @@ public class GameWindow extends Application {
         root.add(buttonRow, 0, 3);
         root.add(boardGrid, 0, 4);
         root.add(questionArea, 0, 5);
+        GridPane.setHalignment(Winner, javafx.geometry.HPos.CENTER); 
 
     
         gameScreen = new Scene(root, 700, 850);
@@ -265,6 +265,8 @@ public class GameWindow extends Application {
     
     public void checkWin() {
     	int winner = game.checkWinner();
+    	Winner.setStroke(Color.BLACK);
+    	Winner.setStrokeWidth(2);
     	AudioClip WinningAudio = new AudioClip(new File("WinningAudio.mp3").toURI().toString());
     	// TODO Replace println with gui visuals and make it stop the game
     	if (winner == Connect4.YELLOW) {
@@ -274,8 +276,10 @@ public class GameWindow extends Application {
     		questionButton.setDisable(true);
     		topControls.setVisible(false);
     		Winner.setText("Yellow Wins");
+    		Winner.setFill(Color.YELLOW);
     		Winner.setVisible(true);
     		gameOver = true;
+    		turnLabel.setVisible(false);
     		backgroundAudio.stop();
     		WinningAudio.setVolume(0.25);
     		WinningAudio.play();
@@ -285,7 +289,9 @@ public class GameWindow extends Application {
     		setQuestionsDisabled();
     		Winner.setText("Red Wins");
     		topControls.setVisible(false);
+    		Winner.setFill(Color.RED);
     		Winner.setVisible(true);
+    		turnLabel.setVisible(false);
     		questionButton.setDisable(true);
     		gameOver = true;
     		backgroundAudio.stop();
@@ -296,6 +302,7 @@ public class GameWindow extends Application {
     		setButtonsDisabled();
     		setQuestionsDisabled();
     		topControls.setVisible(false);
+    		turnLabel.setVisible(false);
     		Winner.setText("Its a tie");
     		Winner.setVisible(true);
     		
