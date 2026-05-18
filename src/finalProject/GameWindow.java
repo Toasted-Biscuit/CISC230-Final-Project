@@ -26,6 +26,115 @@ public class GameWindow extends Application {
     private int correctAnswer;
     
   
+    //this keeps track of which question we are currently showing
+    private int questionIndex = 0;
+
+    /*
+     * These are the questions for the sustainability trivia part of the game.
+     * The matching answer choices are stored in the answers array below.
+     */
+    private String[] questions = {
+        "Which of the following is NOT a way to conserve energy?",
+        "What is the name of the series of gardens around campus that attract pollinators?",
+        "Where is there a bike repair station located on campus?",
+        "Which of the following is NOT a helpful tip for reducing food waste?",
+        "Which of the following is NOT a way to conserve water?",
+        "The Sustainability minor is available to students in which fields?",
+        "Which of the following are clubs at St. Thomas?",
+        "Dining Services reduces waste by...",
+        "At St. Thomas, which item is accepted in the blue recycling bins?",
+        "All of the following are accepted for organics recycling EXCEPT..."
+    };
+
+    /*
+     * Each row belongs to one question.
+     * Index 0 = Answer A
+     * Index 1 = Answer B
+     * Index 2 = Answer C
+     * Index 3 = Answer D
+     */
+    private String[][] answers = {
+        {
+            "A. Unplugging devices when not in use",
+            "B. Turning off lights when leaving the room",
+            "C. Keeping windows closed in winter",
+            "D. Washing laundry in small loads"
+        },
+        {
+            "A. Bee Garden",
+            "B. Pollinator Path",
+            "C. Butterfly Garden",
+            "D. Bee Path"
+        },
+        {
+            "A. South side of O'Shaughnessy Stadium",
+            "B. Bike storage in Frey Residence Hall",
+            "C. Bike storage in Schoenecker Hall North",
+            "D. All of the above"
+        },
+        {
+            "A. Storing produce properly",
+            "B. Planning meals at the beginning of the week",
+            "C. Only purchasing what you need",
+            "D. Storing all items in the refrigerator"
+        },
+        {
+            "A. Eating more plant-based meals",
+            "B. Taking shorter showers",
+            "C. Leaving the sink on while brushing teeth",
+            "D. Only washing full loads of laundry"
+        },
+        {
+            "A. Arts and Sciences",
+            "B. Engineering",
+            "C. Business",
+            "D. All of the above and more"
+        },
+        {
+            "A. Sustainability Club",
+            "B. Earth, Environment, and Society Club",
+            "C. Tommie Outdoors",
+            "D. All of the above"
+        },
+        {
+            "A. Recovering leftover food",
+            "B. Offering reusable to-go containers",
+            "C. Offering reusable cup discounts",
+            "D. All of the above"
+        },
+        {
+            "A. Glass",
+            "B. Lightbulbs",
+            "C. Plastic bags",
+            "D. Batteries"
+        },
+        {
+            "A. All food scraps",
+            "B. Napkins",
+            "C. All paper cups",
+            "D. Flower trimmings"
+        }
+    };
+
+    /*
+     * These are the correct answers.
+     * 0 = A
+     * 1 = B
+     * 2 = C
+     * 3 = D
+     */
+    private int[] correctAnswers = {
+        3, // D
+        1, // B
+        3, // D
+        3, // D
+        2, // C
+        3, // D
+        3, // D
+        3, // D
+        0, // A
+        2  // C
+    };
     
     public void start(Stage ps) {
         GridPane root = new GridPane();
@@ -226,13 +335,34 @@ public class GameWindow extends Application {
     }
     
     public void askQuestion() {
+    	//this will show the current question on the screen
+    	questionText.setText(questions[questionIndex]);
+    	
+    	//this will update the four answer buttons based on the current question
+    	answerA.setText(answers[questionIndex][0]);
+    	answerB.setText(answers[questionIndex][1]);
+    	answerC.setText(answers[questionIndex][2]);
+    	answerD.setText(answers[questionIndex][3]);
+    	
+    	//this stores which answer is correct for the current question
+    	correctAnswer = correctAnswers[questionIndex];
+    	
+    	//after showing the question, the player should be able to choose an answer
     	setQuetionsEnabled();
+    	
+    	//move to the next question for next time
+    	questionIndex++;
+    	
+    	//if we reach the end of the question list, start from the first question again
+    	if (questionIndex == questions.length) {
+    		questionIndex = 0;
+    	}
     }
     
     public void checkAnswer(ActionEvent event) {
     	int selectedAnswer = (int)((Button)event.getSource()).getUserData();
     	setQuetionsDisabled();
-    	if ( selectedAnswer == correctAnswer) {
+    	if (selectedAnswer == correctAnswer) {
     		questionText.setText("Correct, Now place your chip.");
     		setButtonsEnabled();
     		questionActive = false;
