@@ -2,143 +2,88 @@ package finalProject;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 
 public class GameWindow extends Application {
     private Circle[][] circles = new Circle[6][7];
     private Connect4 game = new Connect4();
     private Label turnLabel;
-    Button[] chipButtons;
-    Button startButton;
+    private Button[] chipButtons;
+    private Button startButton;
     private Label questionText;
-    private Button answerA;
-    private Button answerB;
-    private Button answerC;
-    private Button answerD;
+    private Text explanationText;
+    private Button answerA, answerB, answerC, answerD;
     private Button questionButton;
     private boolean questionActive = false;
-    private int correctAnswer;
+    private Quiz question;
     
-  
-    //this keeps track of which question we are currently showing
-    private int questionIndex = 0;
-
-    /*
-     * These are the questions for the sustainability trivia part of the game.
-     * The matching answer choices are stored in the answers array below.
-     */
-    private String[] questions = {
-        "Which of the following is NOT a way to conserve energy?",
-        "What is the name of the series of gardens around campus that attract pollinators?",
-        "Where is there a bike repair station located on campus?",
-        "Which of the following is NOT a helpful tip for reducing food waste?",
-        "Which of the following is NOT a way to conserve water?",
-        "The Sustainability minor is available to students in which fields?",
-        "Which of the following are clubs at St. Thomas?",
-        "Dining Services reduces waste by...",
-        "At St. Thomas, which item is accepted in the blue recycling bins?",
-        "All of the following are accepted for organics recycling EXCEPT..."
-    };
-
-    /*
-     * Each row belongs to one question.
-     * Index 0 = Answer A
-     * Index 1 = Answer B
-     * Index 2 = Answer C
-     * Index 3 = Answer D
-     */
-    private String[][] answers = {
-        {
-            "A. Unplugging devices when not in use",
-            "B. Turning off lights when leaving the room",
-            "C. Keeping windows closed in winter",
-            "D. Washing laundry in small loads"
-        },
-        {
-            "A. Bee Garden",
-            "B. Pollinator Path",
-            "C. Butterfly Garden",
-            "D. Bee Path"
-        },
-        {
-            "A. South side of O'Shaughnessy Stadium",
-            "B. Bike storage in Frey Residence Hall",
-            "C. Bike storage in Schoenecker Hall North",
-            "D. All of the above"
-        },
-        {
-            "A. Storing produce properly",
-            "B. Planning meals at the beginning of the week",
-            "C. Only purchasing what you need",
-            "D. Storing all items in the refrigerator"
-        },
-        {
-            "A. Eating more plant-based meals",
-            "B. Taking shorter showers",
-            "C. Leaving the sink on while brushing teeth",
-            "D. Only washing full loads of laundry"
-        },
-        {
-            "A. Arts and Sciences",
-            "B. Engineering",
-            "C. Business",
-            "D. All of the above and more"
-        },
-        {
-            "A. Sustainability Club",
-            "B. Earth, Environment, and Society Club",
-            "C. Tommie Outdoors",
-            "D. All of the above"
-        },
-        {
-            "A. Recovering leftover food",
-            "B. Offering reusable to-go containers",
-            "C. Offering reusable cup discounts",
-            "D. All of the above"
-        },
-        {
-            "A. Glass",
-            "B. Lightbulbs",
-            "C. Plastic bags",
-            "D. Batteries"
-        },
-        {
-            "A. All food scraps",
-            "B. Napkins",
-            "C. All paper cups",
-            "D. Flower trimmings"
-        }
-    };
-
-    /*
-     * These are the correct answers.
-     * 0 = A
-     * 1 = B
-     * 2 = C
-     * 3 = D
-     */
-    private int[] correctAnswers = {
-        3, // D
-        1, // B
-        3, // D
-        3, // D
-        2, // C
-        3, // D
-        3, // D
-        3, // D
-        0, // A
-        2  // C
-    };
+    private boolean gameOver = false;
+    
+    private Stage stage;
+    private Scene gameScreen;
+    private int mode;
+    // Game modes (constants meant for code readability)
+    private final int VERSUS = 0;
+    private final int SINGLE_PLAYER = 1;
     
     public void start(Stage ps) {
+    	stage = ps;
+    	// TITLE SCREEN ----------------------
+    	// Title and credits
+    	Label titleLabel = new Label("Connect 4");
+    	titleLabel.setFont(Font.font("", FontWeight.BOLD, 70));
+    	Label credits = new Label("By: Kason, Kay, and Nathan");
+    	credits.setFont(Font.font(20));
+    	
+    	// Game mode buttons
+    	Button vsButton = new Button("Vs.");
+    	vsButton.setPrefHeight(50);
+    	vsButton.setPrefWidth(180);
+    	vsButton.setFont(Font.font(20));
+    	vsButton.setOnAction(this::vsClick);
+    	
+    	Button singlePlayerButton = new Button("Single Player");
+    	singlePlayerButton.setPrefHeight(50);
+    	singlePlayerButton.setPrefWidth(180);
+    	singlePlayerButton.setFont(Font.font(20));
+    	singlePlayerButton.setOnAction(this::singlePlayerClick);
+    	
+    	
+    	GridPane titleGrid = new GridPane();
+    	titleGrid.add(titleLabel, 0, 0);
+    	titleGrid.add(credits, 0, 1);
+    	titleGrid.add(singlePlayerButton, 0, 2);
+    	titleGrid.add(vsButton, 0, 3);
+    	
+    	titleGrid.setVgap(20);
+    	titleGrid.setAlignment(Pos.CENTER);
+    	// Sets horizontal alignment for all nodes in titleGrid
+    	for (Node n : titleGrid.getChildren()) {
+    		GridPane.setHalignment(n, HPos.CENTER);;
+    	}
+    	
+    	Scene titleScreen = new Scene(titleGrid, 700, 850);
+    	
+    	stage.setScene(titleScreen);
+        ps.setTitle("Connect 4");
+        ps.show();
+    	
+        
+    	// GAME SCREEN -----------------------
         GridPane root = new GridPane();
-        root.setAlignment(javafx.geometry.Pos.CENTER); //looked this up
+        root.setAlignment(Pos.CENTER); //looked this up
         root.setHgap(15);
         root.setVgap(15);
         root.setStyle("-fx-padding: 20; -fx-background-color: #f0f0f0;"); //had to look this up
@@ -157,17 +102,17 @@ public class GameWindow extends Application {
         questionButton = new Button("Question");
         questionButton.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;"); //looked up
         questionButton.setDisable(true);
-        questionButton.setOnAction(this::askQuestion1);
+        questionButton.setOnAction(this::askQuestionClick);
 
         GridPane topControls = new GridPane();
         topControls.setHgap(15);
-        topControls.setAlignment(javafx.geometry.Pos.CENTER);
+        topControls.setAlignment(Pos.CENTER);
         topControls.add(startButton, 0, 0);
         topControls.add(questionButton, 1, 0);
         
         GridPane buttonRow = new GridPane();
         buttonRow.setHgap(5);
-        buttonRow.setAlignment(javafx.geometry.Pos.CENTER);
+        buttonRow.setAlignment(Pos.CENTER);
         
         // An array full of buttons meant to place chips when pressed
         chipButtons = new Button[7];
@@ -187,7 +132,7 @@ public class GameWindow extends Application {
         boardGrid.setHgap(5);
         boardGrid.setVgap(5);
         boardGrid.setStyle("-fx-padding: 15; -fx-background-color: #3498db; -fx-background-radius: 10;");
-        boardGrid.setAlignment(javafx.geometry.Pos.CENTER);
+        boardGrid.setAlignment(Pos.CENTER);
 
         for (int row = 0; row < circles.length; row++) {
             for (int col = 0; col < circles[row].length; col++) {
@@ -201,8 +146,9 @@ public class GameWindow extends Application {
             }
         }
 
+        // QUESTION UI ------------------------------
         GridPane questionArea = new GridPane();
-        questionArea.setAlignment(javafx.geometry.Pos.CENTER);
+        questionArea.setAlignment(Pos.CENTER);
         questionArea.setHgap(10);
         questionArea.setVgap(10);
         questionArea.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-width: 2; -fx-border-radius: 5;");
@@ -215,7 +161,10 @@ public class GameWindow extends Application {
         questionText.setStyle("-fx-font-size: 14px;");
         questionText.setWrapText(true);
         questionText.setMaxWidth(400);
+        questionText.setWrapText(true);
         
+        explanationText = new Text("");
+        explanationText.setWrappingWidth(questionArea.getMinWidth());
      
         answerA = new Button("Answer A");
         answerB = new Button("Answer B");
@@ -223,7 +172,7 @@ public class GameWindow extends Application {
         answerD = new Button("Answer D");
         
         
-        String answerButtonStyle = "-fx-min-width: 150; -fx-padding: 10; -fx-font-size: 13px;";
+        String answerButtonStyle = "-fx-min-width: 300; -fx-padding: 10; -fx-font-size: 13px;";
         answerA.setStyle(answerButtonStyle);
         answerB.setStyle(answerButtonStyle);
         answerC.setStyle(answerButtonStyle);
@@ -234,7 +183,7 @@ public class GameWindow extends Application {
         answerC.setUserData(2);
         answerD.setUserData(3);
         
-        setQuetionsDisabled();
+        setQuestionsDisabled();
         
         answerA.setOnAction(this::checkAnswer);
         answerB.setOnAction(this::checkAnswer);
@@ -247,6 +196,7 @@ public class GameWindow extends Application {
         questionArea.add(answerB, 1, 2);
         questionArea.add(answerC, 0, 3);
         questionArea.add(answerD, 1, 3);
+        questionArea.add(explanationText, 0, 4);
 
         root.add(title, 0, 0);
         root.add(topControls, 0, 1);
@@ -256,41 +206,68 @@ public class GameWindow extends Application {
         root.add(questionArea, 0, 5);
 
     
-        Scene scene = new Scene(root, 700, 850);
-
-        ps.setTitle("Connect 4");
-        ps.setScene(scene);
-        ps.show();
+        gameScreen = new Scene(root, 700, 850);
+    }
+    
+    // Switches the screen to the game UI and sets the mode to versus
+    public void vsClick(ActionEvent e) {
+    	stage.setScene(gameScreen);
+    	mode = VERSUS;
+    }
+    
+    // Switches to screen to the game UI and sets the mode to single player
+    public void singlePlayerClick(ActionEvent e) {
+    	stage.setScene(gameScreen);
+    	mode = SINGLE_PLAYER;
     }
     
     // When the chip buttons are pressed, places a chip in the column assigned to the button
     public void placeChip(ActionEvent e) {
-    	questionButton.setDisable(false);
-    
     	int col = (int)((Button)e.getSource()).getUserData();
-    	game.placeChip(col);
-    	updateBoard();
     	
-    	if (game.getTurn() == 1) {
-    		turnLabel.setText("Yellow's Turn");
-    	} else {
-    		turnLabel.setText("Red's Turn");
+    	// Only continues game if placed in open location
+    	if (game.placeChip(col)) {
+    		updateBoard();
+    		
+    		questionButton.setDisable(false);
+    		
+    		checkWin();
+    		setButtonsDisabled();
+    		
+    		if (mode == SINGLE_PLAYER && !gameOver) {
+    			botTurn();
+    		}    		
     	}
-    	
+    }
+    
+    public void checkWin() {
     	int winner = game.checkWinner();
     	// TODO Replace println with gui visuals and make it stop the game
     	if (winner == Connect4.YELLOW) {
     		System.out.println("Yellow Wins!!!");
     		setButtonsDisabled();
-    		setQuetionsDisabled();
+    		setQuestionsDisabled();
     		questionButton.setDisable(true);
+    		gameOver = true;
     	} else if (winner == Connect4.RED) {
     		System.out.println("Red Wins!!!");
     		setButtonsDisabled();
-    		setQuetionsDisabled();
+    		setQuestionsDisabled();
     		questionButton.setDisable(true);
+    		gameOver = true;
+    	} else if (winner == Connect4.EMPTY) {
+    		System.out.println("It's a Tie!!!");
+    		setButtonsDisabled();
+    		setQuestionsDisabled();
+    		questionButton.setDisable(true);
+    		gameOver = true;
     	}
-    	setButtonsDisabled();
+    }
+    
+    public void botTurn() {
+    	game.placeRandomChip();
+    	updateBoard();
+    	checkWin();
     }
     
     // Updates the onscreen board to reflect the game board
@@ -309,12 +286,18 @@ public class GameWindow extends Application {
     			}
     		}
     	}
+    	
+    	if (game.getTurn() == 1) {
+    		turnLabel.setText("Yellow's Turn");
+    	} else {
+    		turnLabel.setText("Red's Turn");
+    	}
     }
     
     
     public void startButtonAction(ActionEvent evnet) {
     	startButton.setDisable(true);
-    	setQuetionsDisabled();
+    	setQuestionsDisabled();
     	questionButton.setDisable(false);
     	
     }
@@ -329,41 +312,41 @@ public class GameWindow extends Application {
     		button.setDisable(false);
     	}
     }
-    public void askQuestion1(ActionEvent event) {
+    
+    // 
+    public void askQuestionClick(ActionEvent event) {
     	askQuestion();
     	questionButton.setDisable(true);
+    	explanationText.setText("");
     }
     
     public void askQuestion() {
-    	//this will show the current question on the screen
-    	questionText.setText(questions[questionIndex]);
     	
-    	//this will update the four answer buttons based on the current question
-    	answerA.setText(answers[questionIndex][0]);
-    	answerB.setText(answers[questionIndex][1]);
-    	answerC.setText(answers[questionIndex][2]);
-    	answerD.setText(answers[questionIndex][3]);
+    	// Gets a random quiz question
+    	question = Quiz.getRandomQuestion();
     	
-    	//this stores which answer is correct for the current question
-    	correctAnswer = correctAnswers[questionIndex];
+    	// Displays the current question
+    	questionText.setText(question.getQuestion());
+    	
+    	// Displays the current answers
+    	answerA.setText(question.getAnswers()[0]);
+    	answerB.setText(question.getAnswers()[1]);
+    	answerC.setText(question.getAnswers()[2]);
+    	answerD.setText(question.getAnswers()[3]);
+    	
     	
     	//after showing the question, the player should be able to choose an answer
-    	setQuetionsEnabled();
+    	setQuestionsEnabled();
     	
-    	//move to the next question for next time
-    	questionIndex++;
-    	
-    	//if we reach the end of the question list, start from the first question again
-    	if (questionIndex == questions.length) {
-    		questionIndex = 0;
-    	}
     }
     
     public void checkAnswer(ActionEvent event) {
     	int selectedAnswer = (int)((Button)event.getSource()).getUserData();
-    	setQuetionsDisabled();
-    	if (selectedAnswer == correctAnswer) {
-    		questionText.setText("Correct, Now place your chip.");
+    	setQuestionsDisabled();
+    	explanationText.setText(question.getExplanation());
+    	colorAnswerButtons();
+    	if (selectedAnswer == question.getCorrectAnswer()) {
+    		questionText.setText("Correct, Now place your chip.");  		
     		setButtonsEnabled();
     		questionActive = false;
     	} else {
@@ -376,21 +359,47 @@ public class GameWindow extends Application {
     		}else {
     			turnLabel.setText("Red's Turn");
     		}
+    		
+        	if (mode == SINGLE_PLAYER && !gameOver) {
+        		botTurn();
+        	}
     	}
     }
     
-    public void setQuetionsDisabled() {
+    public void colorAnswerButtons() {
+    	answerA.setTextFill(Color.RED);
+    	answerB.setTextFill(Color.RED);
+    	answerC.setTextFill(Color.RED);
+    	answerD.setTextFill(Color.RED);
+    	
+    	if (question.getCorrectAnswer() == 0) {
+    		answerA.setTextFill(Color.GREEN);
+    	} else if (question.getCorrectAnswer() == 1) {
+    		answerB.setTextFill(Color.GREEN);
+    	} else if (question.getCorrectAnswer() == 2) {
+    		answerC.setTextFill(Color.GREEN);
+    	} else {
+    		answerD.setTextFill(Color.GREEN);
+    	}
+    }
+    
+    public void setQuestionsDisabled() {
     	answerA.setDisable(true);
     	answerB.setDisable(true);
     	answerC.setDisable(true);
     	answerD.setDisable(true);
+    	
     }
     
-    public void setQuetionsEnabled() {
+    public void setQuestionsEnabled() {
     	answerA.setDisable(false);
+    	answerA.setTextFill(Color.BLACK);
     	answerB.setDisable(false);
+    	answerB.setTextFill(Color.BLACK);
     	answerC.setDisable(false);
+    	answerC.setTextFill(Color.BLACK);
     	answerD.setDisable(false);
+    	answerD.setTextFill(Color.BLACK);
     }
 
     public static void main(String[] args) {

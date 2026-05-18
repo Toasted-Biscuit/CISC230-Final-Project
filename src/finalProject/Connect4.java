@@ -28,14 +28,16 @@ public class Connect4 {
 	}
 	
 	// Places a chip in the given column. Chip is determined using the current turn
-	public void placeChip(int col) {
+	public boolean placeChip(int col) {
 		int row = getAvailableIndex(col);
 		
 		if (row != -1) {
 			board[row][col] = turn;
 			changeTurn();
+			return true;
 		} else {
 			System.out.println("Attempted to place chip in full column");
+			return false;
 		}
 	}
 	
@@ -54,19 +56,52 @@ public class Connect4 {
 		}
 	}
 	
+	// Places a random chip in an open space
+	public void placeRandomChip() {
+		// Didn't feel like importing these for just 1 method
+		java.util.Random rand = new java.util.Random();
+		java.util.ArrayList<Integer> openCols = new java.util.ArrayList<Integer>();
+		
+		// Gets all available columns and adds it to an ArrayList
+		for (int i = 0; i < board[0].length; i++) {
+			if (getAvailableIndex(i) != -1) {
+				openCols.add(i);
+			}
+		}
+		
+		if (openCols.size() > 0) {
+			// Picks a random open column
+			placeChip(openCols.get(rand.nextInt(0, openCols.size())));			
+		} else {
+			System.out.println("No empty columns to add random chip to");
+		}
+	}
+	
 	// Checks board from left to right and up to down. Finds the first instance of
 	// a 4 in a row pattern and returns the chip color of the winner. Returns -1 if there are no winners
+	// Returns 0 if the board is full with no winners (a tie)
 	public int checkWinner() {
+		boolean roomOnBoard = false;
 		for (int r = 0; r < board.length; r++) {
 			for (int c = 0; c < board[r].length; c++) {
 				if (board[r][c] != EMPTY) {
+					// Checks if anybody wins. If so, return that color
 					int result = findWinningPattern(r, c, board[r][c], 0, 5);
 					if (result != 0) {
 						return result;
 					}
+				} else {
+					roomOnBoard = true;
 				}
 			}
 		}
+		
+		// If there are no 0s on the board with no winners, the game is a tie
+		if (!roomOnBoard) {
+			return 0;
+		}
+		
+		// No winners and room on board still
 		return -1;
 	}
 	

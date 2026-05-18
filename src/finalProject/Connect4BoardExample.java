@@ -12,7 +12,7 @@ public class Connect4BoardExample {
 //		placeRightDiagonal(c4);
 //		placeVertLine(c4);
 //		placeHorizLine(c4);
-		randomGame(c4, 20);
+		randomGame(c4);
 		
 		c4.displayBoard();
 		
@@ -21,15 +21,17 @@ public class Connect4BoardExample {
 			System.out.println("Yellow Wins!!!");
 		} else if (winner == c4.RED) {
 			System.out.println("Red Wins!!!");
+		} else if (winner == 0) {
+			System.out.println("Tie");
+		} else {
+			System.out.println("Nobody won");
 		}
 	}
 	
 	// Plays a game by placing chips in random columns. Stops when someone wins
-	public static void randomGame(Connect4 c4, int rounds) {
-		Random rand = new Random();
-		while (c4.checkWinner() == -1 && rounds > 0) {
-			c4.placeChip(rand.nextInt(0, 7));
-			rounds--;
+	public static void randomGame(Connect4 c4) {
+		while (c4.checkWinner() == -1) {
+			c4.placeRandomChip();
 		}
 	}
 	
