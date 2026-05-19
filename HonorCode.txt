@@ -1,0 +1,25 @@
+CISC 230 (Prof. Akram)
+
+Project Title Connect 4
+
+Student Name: Nathan, Kason, and Kay
+
+Honor Code and Reflection Statement:
+
+By placing my initials below, I affirm that I have completed all parts of this assignment strictly adhering to the academic integrity guidelines outlined in the course syllabus and lab policy. Specifically, I confirm that:
+
+    I did not receive unauthorized assistance from anyone other than the course instructor (Prof. Akram).
+    I did not assist anyone else on this assignment.
+    I did not seek or use help from any AI tools, online sources, or other platforms.
+
+Time spent on the assignment: 15
+
+My impressions of the assignment:
+
+    Difficulty (1-5): 4
+    Enjoyment (1-5): 3
+    Usefulness (1-5): 4
+
+Further comments and feedback: We made some early descisions that caused us to slightly stray away from the specific goals of the assignment. But overall, we believe that the project turned out very well and displays our knowledge from this class.
+
+Your initials: NH, KZ, KS
