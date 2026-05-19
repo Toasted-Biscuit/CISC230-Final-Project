@@ -36,41 +36,43 @@ public class GameWindow extends Application {
     private AudioClip backgroundAudio;
     private AudioClip chipPlacedAudio;
     private Quiz question;
-    
     private Text Winner;
     TextField leaderboardName;
     Button leaderboardButton;
     private boolean gameOver = false;
-    
     private Stage stage;
     private Scene gameScreen;
     private Scene SinglePlayerDifficultyscene;
     private int mode;
     private int singlePlayerMode;
+    
     // Game modes (constants meant for code readability)
     private final int VERSUS = 0;
     private final int SINGLE_PLAYER = 1;
     
     public void start(Stage ps) {
     	
+    	//Sets up and starts playing the background game audio
     	backgroundAudio = new AudioClip(new File("BackgroundAudio.mp3").toURI().toString());
     	backgroundAudio.setVolume(0.25);
     	backgroundAudio.setCycleCount(AudioClip.INDEFINITE);
     	backgroundAudio.play();
     	
+    	//Sets up the audio to play when a chip is placed
     	File chipPlacedAudioFile = new File("ChipPlacedAudio.mp3");
     	String chipPlacedaudioURI = chipPlacedAudioFile.toURI().toString();
     	chipPlacedAudio = new AudioClip(chipPlacedaudioURI);
     	chipPlacedAudio.setVolume(0.7);
     	
+    	//sets up the winner text that displays the winner on the screen
     	Winner = new Text("winner");
     	Winner.setFont(Font.font("", FontWeight.BOLD, 70));
     	Winner.setVisible(false);
     	
+    	//sets up the leaderboard so that after the game ends you can input a name
     	leaderboardName = new TextField();
     	leaderboardName.setPromptText("Enter your name here!");
     	leaderboardName.setVisible(false);
-    	
     	leaderboardButton = new Button("Enter");
     	leaderboardButton.setVisible(false);
     	leaderboardButton.setOnAction(this::leaderboardSubmit);
@@ -100,7 +102,7 @@ public class GameWindow extends Application {
     	singlePlayerButton.setFont(Font.font(20));
     	singlePlayerButton.setOnAction(this::singlePlayerClick);
     	
-    	
+    	//sets up a new gridpane that is for when you start the program
     	GridPane titleGrid = new GridPane();
     	titleGrid.add(titleLabel, 0, 0);
     	titleGrid.add(credits, 0, 1);
@@ -114,6 +116,7 @@ public class GameWindow extends Application {
     		GridPane.setHalignment(n, HPos.CENTER);;
     	}
     	
+    	//sets up the scene that shows when you first launch the program
     	Scene titleScreen = new Scene(titleGrid, 700, 870);
     	
     	stage.setScene(titleScreen);
@@ -135,15 +138,18 @@ public class GameWindow extends Application {
         turnLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;"); 
         Label messageLabel = new Label("Game messages will appear here.");
 
+        //sets up the buttons that run the game (start) and (question)
         startButton = new Button("Start Game");
         startButton.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"); //looked up
         startButton.setDisable(false);
         startButton.setOnAction(this::startButtonAction);
+        
         questionButton = new Button("Question");
         questionButton.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;"); //looked up
         questionButton.setDisable(true);
         questionButton.setOnAction(this::askQuestionClick);
 
+        //A gridpane that holds the start and question button that runs the game
         topControls = new GridPane();
         topControls.setVisible(true);
         topControls.setHgap(15);
@@ -151,6 +157,7 @@ public class GameWindow extends Application {
         topControls.add(startButton, 0, 0);
         topControls.add(questionButton, 1, 0);
         
+        //This sets up a gridpane for the differnt answers a,b,c,d
         GridPane buttonRow = new GridPane();
         buttonRow.setHgap(5);
         buttonRow.setAlignment(Pos.CENTER);
@@ -168,7 +175,7 @@ public class GameWindow extends Application {
         	chipButtons[i].setDisable(true);
         	buttonRow.add(chipButtons[i], i, 0);
         }
-
+        //Makes the gridpane for the board
         GridPane boardGrid = new GridPane();
         boardGrid.setHgap(5);
         boardGrid.setVgap(5);
@@ -207,30 +214,35 @@ public class GameWindow extends Application {
         explanationText = new Text("");
         explanationText.setWrappingWidth(questionArea.getMinWidth());
      
+        //Sets up the answer buttons
         answerA = new Button("Answer A");
         answerB = new Button("Answer B");
         answerC = new Button("Answer C");
         answerD = new Button("Answer D");
         
-        
+        //sets the answerbutton syles
         String answerButtonStyle = "-fx-min-width: 300; -fx-padding: 10; -fx-font-size: 13px;";
         answerA.setStyle(answerButtonStyle);
         answerB.setStyle(answerButtonStyle);
         answerC.setStyle(answerButtonStyle);
         answerD.setStyle(answerButtonStyle);
         
+        //sets the answerbutton so when clicked a=0,b=1,c=2,d=3
         answerA.setUserData(0);
         answerB.setUserData(1);
         answerC.setUserData(2);
         answerD.setUserData(3);
         
+        //by default they are disabled until the game is started
         setQuestionsDisabled();
         
+        //when clicked they call the check answer function
         answerA.setOnAction(this::checkAnswer);
         answerB.setOnAction(this::checkAnswer);
         answerC.setOnAction(this::checkAnswer);
         answerD.setOnAction(this::checkAnswer);
         
+        //Adds all these elements to question area gridpane
         questionArea.add(questionTitle, 0, 0);
         questionArea.add(questionText, 0, 1, 2, 1);
         questionArea.add(answerA, 0, 2);
@@ -239,6 +251,7 @@ public class GameWindow extends Application {
         questionArea.add(answerD, 1, 3);
         questionArea.add(explanationText, 0, 4);
 
+        //root holds all the gridpanes 
         root.add(title, 0, 0);
         root.add(Winner, 0, 1);
         root.add(leaderboardPane, 0, 2);
@@ -249,7 +262,7 @@ public class GameWindow extends Application {
         root.add(questionArea, 0, 5);
         GridPane.setHalignment(Winner, HPos.CENTER); 
 
-    
+        //The gamescreen scene is the main game 
         gameScreen = new Scene(root, 700, 870);
         
         //Makes a new gridpane for the difficulty selection page
@@ -306,7 +319,7 @@ public class GameWindow extends Application {
     	stage.setScene(SinglePlayerDifficultyscene);
 
     }
-    
+    //A scene that allows the user to select the specific difficulty
     public void singlePlayerWithDif(ActionEvent e) {
     	singlePlayerMode = (int)((Button)e.getSource()).getUserData();
     	stage.setScene(gameScreen);
@@ -333,6 +346,7 @@ public class GameWindow extends Application {
     	}
     }
     
+    //A function that checks if they won
     public void checkWin() {
     	int winner = game.checkWinner();
     	Winner.setStroke(Color.BLACK);
@@ -391,6 +405,7 @@ public class GameWindow extends Application {
     	}
     }
     
+    //
     public void leaderboardSubmit(ActionEvent e) {
     	String name = leaderboardName.getText();
     	if (game.writeLeaderboard(name)) {
@@ -399,7 +414,9 @@ public class GameWindow extends Application {
     	}
     }
     
+    //Plays for the bot
     public void botTurn() {
+    	//If gamemode is easy then it has a 50% chance of playing a chip
     	if(singlePlayerMode == 1 ) {
     		if((Math.random()*100) > 50) {
     			game.placeRandomChip();
@@ -410,6 +427,7 @@ public class GameWindow extends Application {
     			turnLabel.setText("Yellow's Turn");
     		}
     	}
+    	//If gamemode is medium then it has a 75% chance of playing a chip
     	if(singlePlayerMode == 2 ) {
     		if((Math.random()*100) > 25) {
     			game.placeRandomChip();
@@ -420,14 +438,13 @@ public class GameWindow extends Application {
     			turnLabel.setText("Yellow's Turn");
     		}
     	}
+    	//If gamemode is hard then it has a 100% chance of playing a chip
     	if(singlePlayerMode == 3 ) {
     		game.placeRandomChip();
     		updateBoard();
     		checkWin();	
     	}
-    	//game.placeRandomChip();
-    	//updateBoard();
-    	//checkWin();
+
     }
     
     // Updates the onscreen board to reflect the game board
@@ -454,7 +471,7 @@ public class GameWindow extends Application {
     	}
     }
     
-    
+    //once it is called it starts the game
     public void startButtonAction(ActionEvent evnet) {
     	startButton.setDisable(true);
     	setQuestionsDisabled();
@@ -462,24 +479,27 @@ public class GameWindow extends Application {
     	
     }
     
+    //disabled all of the chip buttons so then a chip cant be placed
     public void setButtonsDisabled() {
     	for (Button button : chipButtons) {
     		button.setDisable(true);
     	}
     }
+    //Enables the chip buttons so a chip can be placed
     public void setButtonsEnabled() {
     	for (Button button : chipButtons) {
     		button.setDisable(false);
     	}
     }
     
-    // 
+    //when called gets answer 
     public void askQuestionClick(ActionEvent event) {
     	askQuestion();
     	questionButton.setDisable(true);
     	explanationText.setText("");
     }
     
+    //when called gets a random question and its answer loaded for the user
     public void askQuestion() {
     	
     	// Gets a random quiz question
@@ -499,7 +519,7 @@ public class GameWindow extends Application {
     	setQuestionsEnabled();
     	
     }
-    
+    //checks the annswer they selected to see if its correct
     public void checkAnswer(ActionEvent event) {
     	int selectedAnswer = (int)((Button)event.getSource()).getUserData();
     	setQuestionsDisabled();
@@ -526,6 +546,7 @@ public class GameWindow extends Application {
     	}
     }
     
+    //If the answer is correct changed the answer to green otherwise red
     public void colorAnswerButtons() {
     	answerA.setTextFill(Color.RED);
     	answerB.setTextFill(Color.RED);
@@ -543,6 +564,7 @@ public class GameWindow extends Application {
     	}
     }
     
+    //Disabled the answer buttons until they select the question button for a new question
     public void setQuestionsDisabled() {
     	answerA.setDisable(true);
     	answerB.setDisable(true);
@@ -551,6 +573,7 @@ public class GameWindow extends Application {
     	
     }
     
+    //Enables the answer buttons so they can answer the new question
     public void setQuestionsEnabled() {
     	answerA.setDisable(false);
     	answerA.setTextFill(Color.BLACK);
@@ -561,7 +584,7 @@ public class GameWindow extends Application {
     	answerD.setDisable(false);
     	answerD.setTextFill(Color.BLACK);
     }
-
+    //so then hopefuly we dont have to go into run configurations
     public static void main(String[] args) {
         launch(args);
     }
