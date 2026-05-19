@@ -425,6 +425,9 @@ public class GameWindow extends Application {
     		updateBoard();
     		checkWin();	
     	}
+    	//game.placeRandomChip();
+    	//updateBoard();
+    	//checkWin();
     }
     
     // Updates the onscreen board to reflect the game board
